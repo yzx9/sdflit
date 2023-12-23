@@ -63,6 +63,10 @@ impl Vec3f {
         norm(self)
     }
 
+    pub fn normalize(self) -> Vec3f {
+        normalize(self)
+    }
+
     pub fn interpolate(self, v: Vec3f, k: f32) -> Vec3f {
         interpolate(self, v, k)
     }
@@ -164,6 +168,15 @@ pub fn minimum<T: PartialOrd>(a: Vec3<T>, b: Vec3<T>) -> Vec3<T> {
 
 pub fn norm(v: Vec3f) -> f32 {
     f32::sqrt(v.x * v.x + v.y * v.y + v.z * v.z)
+}
+
+pub fn normalize(v: Vec3f) -> Vec3f {
+    let norm = v.norm();
+    if norm != 0.0 {
+        v / norm
+    } else {
+        v
+    }
 }
 
 pub fn interpolate(v1: Vec3f, v2: Vec3f, k: f32) -> Vec3f {

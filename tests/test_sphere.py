@@ -2,7 +2,7 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 
-import sdflit
+from sdflit import Sphere
 
 
 class TestSphere:
@@ -19,14 +19,14 @@ class TestSphere:
         ],
     )
     def test_distance(self, center, raidus, p, expected):
-        sphere = sdflit.Sphere(center, raidus)
+        sphere = Sphere(center, raidus)
         npt.assert_allclose(sphere.distance(p), expected)
 
     @pytest.mark.parametrize(
         "center, raidus, p, expected",
         [
             # fmt:off
-            ((0, 0, 0), 1, (0, 0, 0), True),
+            ((0, 0, 0), 1, (0, 0, 0), True ),
             ((0, 0, 0), 1, (1, 0, 0), False),
             ((0, 0, 0), 1, (2, 0, 0), False),
             ((1, 1, 1), 1, (0, 0, 0), False),
@@ -34,6 +34,6 @@ class TestSphere:
             # fmt:on
         ],
     )
-    def test_is_in(self, center, raidus, p, expected):
-        sphere = sdflit.Sphere(center, raidus)
+    def test_inside(self, center, raidus, p, expected):
+        sphere = Sphere(center, raidus)
         npt.assert_equal(sphere.inside(p), expected)
