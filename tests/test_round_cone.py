@@ -1,7 +1,7 @@
 import numpy.testing as npt
 import pytest
 
-from sdflit import RoundCone
+from sdflit import SDF
 
 
 class TestRoundCone:
@@ -20,7 +20,7 @@ class TestRoundCone:
         ],
     )
     def test_distance(self, a, b, ra, rb, p, expected):
-        round_cone = RoundCone(a, b, ra, rb)
+        round_cone = SDF.new_round_cone(a, b, ra, rb)
         npt.assert_allclose(round_cone.distance(p), expected)
 
     @pytest.mark.parametrize(
@@ -38,5 +38,5 @@ class TestRoundCone:
         ],
     )
     def test_inside(self, a, b, ra, rb, p, expected):
-        round_cone = RoundCone(a, b, ra, rb)
+        round_cone = SDF.new_round_cone(a, b, ra, rb)
         npt.assert_allclose(round_cone.inside(p), expected)

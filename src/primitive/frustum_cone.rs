@@ -1,8 +1,6 @@
 use crate::sdf::SDF;
 use crate::vec3::{self, Vec3f};
-use pyo3::prelude::*;
 
-#[pyclass]
 pub struct FrustumCone {
     a: Vec3f,
     b: Vec3f,
@@ -11,13 +9,8 @@ pub struct FrustumCone {
     bounding_box: (Vec3f, Vec3f),
 }
 
-#[pymethods]
 impl FrustumCone {
-    #[new]
-    pub fn new(a: (f32, f32, f32), b: (f32, f32, f32), ra: f32, rb: f32) -> FrustumCone {
-        let a = Vec3f::from(a);
-        let b = Vec3f::from(b);
-
+    pub fn new(a: Vec3f, b: Vec3f, ra: f32, rb: f32) -> FrustumCone {
         let bounding_box = frustum_cone_aabb(a, b, ra, rb);
         Self {
             a,
@@ -26,14 +19,6 @@ impl FrustumCone {
             rb,
             bounding_box,
         }
-    }
-
-    fn distance(&self, p: (f32, f32, f32)) -> f32 {
-        SDF::distance(self, Vec3f::from(p))
-    }
-
-    fn inside(&self, p: (f32, f32, f32)) -> bool {
-        SDF::inside(self, Vec3f::from(p))
     }
 }
 
