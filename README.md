@@ -1,5 +1,24 @@
 # SDF-Lit
 
+## Usage
+
+```sh
+pip install sdflit
+```
+
+Try it in Python:
+
+```python
+>>> import sdflit as sdf
+>>> sphere = sdf.Sphere((0, 0, 0), 1)
+>>> sphere.distance((0, 0, 0))
+-1.0
+>>> sphere.distance((1, 0, 0))
+0.0
+>>> sphere.distance((1, 1, 1))
+0.7320507764816284
+```
+
 ## Development
 
 Setup Python venv:
@@ -14,19 +33,6 @@ Build Python package after each modification:
 
 ```sh
 maturin develop
-```
-
-Try it in Python:
-
-```python
->>> import sdflit as sdf
->>> sphere = sdf.Sphere((0, 0, 0), 1)
->>> sphere.distance((0, 0, 0))
--1.0
->>> sphere.distance((1, 0, 0))
-0.0
->>> sphere.distance((1, 1, 1))
-0.7320507764816284
 ```
 
 ## License
