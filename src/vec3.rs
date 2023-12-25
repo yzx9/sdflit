@@ -30,19 +30,47 @@ impl<T> From<(T, T, T)> for Vec3<T> {
     }
 }
 
-impl<T: Clone> TryFrom<Vec<T>> for Vec3<T> {
+impl<T> Into<[T; 3]> for Vec3<T> {
+    fn into(self) -> [T; 3] {
+        [self.x, self.y, self.z]
+    }
+}
+
+impl<T: Copy> From<[T; 3]> for Vec3<T> {
+    fn from(x: [T; 3]) -> Vec3<T> {
+        Vec3 {
+            x: x[0],
+            y: x[1],
+            z: x[2],
+        }
+    }
+}
+
+impl<T> Into<(T, T, T)> for Vec3<T> {
+    fn into(self) -> (T, T, T) {
+        (self.x, self.y, self.z)
+    }
+}
+
+impl<T: Copy> TryFrom<Vec<T>> for Vec3<T> {
     type Error = &'static str;
 
     fn try_from(v: Vec<T>) -> Result<Self, Self::Error> {
         if v.len() == 3 {
             Ok(Vec3 {
-                x: v[0].clone(),
-                y: v[1].clone(),
-                z: v[2].clone(),
+                x: v[0],
+                y: v[1],
+                z: v[2],
             })
         } else {
             Err("Vec3 only accepts 3 values")
         }
+    }
+}
+
+impl<T> Into<Vec<T>> for Vec3<T> {
+    fn into(self) -> Vec<T> {
+        vec![self.x, self.y, self.z]
     }
 }
 
