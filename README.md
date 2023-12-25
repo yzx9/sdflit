@@ -19,9 +19,14 @@ maturin develop
 Try it in Python:
 
 ```python
->>> import swc2mask
->>> swc2mask.sum_as_string(5, 20)
-... 25
+>>> import sdflit as sdf
+>>> sphere = sdf.Sphere((0, 0, 0), 1)
+>>> sphere.distance((0, 0, 0))
+-1.0
+>>> sphere.distance((1, 0, 0))
+0.0
+>>> sphere.distance((1, 1, 1))
+0.7320507764816284
 ```
 
 ## License
