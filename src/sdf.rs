@@ -1,4 +1,3 @@
-use crate::primitive;
 use crate::vec3::Vec3f;
 use pyo3::prelude::*;
 use std::sync::Arc;
@@ -25,26 +24,6 @@ pub struct DynSDF(Arc<dyn SDF>);
 
 #[pymethods]
 impl DynSDF {
-    #[staticmethod]
-    pub fn new_frustum_cone(a: (f32, f32, f32), b: (f32, f32, f32), ra: f32, rb: f32) -> Self {
-        let a = Vec3f::from(a);
-        let b = Vec3f::from(b);
-        Self(Arc::new(primitive::FrustumCone::new(a, b, ra, rb)))
-    }
-
-    #[staticmethod]
-    pub fn new_round_cone(a: (f32, f32, f32), b: (f32, f32, f32), ra: f32, rb: f32) -> Self {
-        let a = Vec3f::from(a);
-        let b = Vec3f::from(b);
-        Self(Arc::new(primitive::RoundCone::new(a, b, ra, rb)))
-    }
-
-    #[staticmethod]
-    pub fn new_sphere(center: (f32, f32, f32), radius: f32) -> Self {
-        let center = Vec3f::from(center);
-        Self(Arc::new(primitive::Sphere::new(center, radius)))
-    }
-
     fn distance(&self, p: (f32, f32, f32)) -> f32 {
         SDF::distance(self, Vec3f::from(p))
     }

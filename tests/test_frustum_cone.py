@@ -1,7 +1,7 @@
 import numpy.testing as npt
 import pytest
 
-from sdflit import SDF
+from sdflit import FrustumCone
 
 
 class TestFrustumCone:
@@ -19,7 +19,7 @@ class TestFrustumCone:
         ],
     )
     def test_distance(self, a, b, ra, rb, p, expected):
-        frustum_cone = SDF.new_frustum_cone(a, b, ra, rb)
+        frustum_cone = FrustumCone(a, b, ra, rb)
         npt.assert_allclose(frustum_cone.distance(p), expected)
 
     @pytest.mark.parametrize(
@@ -37,5 +37,5 @@ class TestFrustumCone:
         ],
     )
     def test_inside(self, a, b, ra, rb, p, expected):
-        frustum_cone = SDF.new_frustum_cone(a, b, ra, rb)
+        frustum_cone = FrustumCone(a, b, ra, rb)
         npt.assert_allclose(frustum_cone.inside(p), expected)

@@ -1,6 +1,10 @@
-use crate::sdf::SDF;
+use crate::sdf::{DynSDF, SDF};
 use crate::vec3::{self, Vec3f};
+use pyo3::prelude::*;
+use std::sync::Arc;
 
+#[pyclass]
+#[derive(Clone)]
 pub struct FrustumCone {
     a: Vec3f,
     b: Vec3f,
@@ -9,9 +13,14 @@ pub struct FrustumCone {
     bounding_box: (Vec3f, Vec3f),
 }
 
+#[pymethods]
 impl FrustumCone {
-    pub fn new(a: Vec3f, b: Vec3f, ra: f32, rb: f32) -> FrustumCone {
-        let bounding_box = frustum_cone_aabb(a, b, ra, rb);
+    #[new]
+    pub fn new(a: (f32, f32, f32), b: (f32, f32, f32), ra: f32, rb: f32) -> FrustumCone {
+        let a = Vec3f::from(a);
+        let b = Vec3f::from(b);
+
+        let bounding_box = aabb_frustum_cone(a, b, ra, rb);
         Self {
             a,
             b,
@@ -19,6 +28,19 @@ impl FrustumCone {
             rb,
             bounding_box,
         }
+    }
+
+    pub fn distance(&self, p: (f32, f32, f32)) -> f32 {
+        SDF::distance(self, Vec3f::from(p))
+    }
+
+    pub fn inside(&self, p: (f32, f32, f32)) -> bool {
+        SDF::inside(self, Vec3f::from(p))
+    }
+
+    pub fn into(&self) -> DynSDF {
+        let arc: Arc<dyn SDF> = Arc::new(self.clone());
+        DynSDF::from(arc)
     }
 }
 
@@ -32,7 +54,7 @@ impl SDF for FrustumCone {
     }
 }
 
-fn frustum_cone_aabb(a: Vec3f, b: Vec3f, ra: f32, rb: f32) -> (Vec3f, Vec3f) {
+fn aabb_frustum_cone(a: Vec3f, b: Vec3f, ra: f32, rb: f32) -> (Vec3f, Vec3f) {
     let up = a - b;
 
     let vx = project_vector_on_plane(Vec3f::new(1.0, 0.0, 0.0), up);

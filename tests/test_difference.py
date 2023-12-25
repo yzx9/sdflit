@@ -1,7 +1,7 @@
 import numpy.testing as npt
 import pytest
 
-from sdflit import SDF, subtract
+from sdflit import Sphere, subtract
 
 
 class TestMerge:
@@ -20,7 +20,7 @@ class TestMerge:
         ],
     )
     def test_sphere_2(self, c1, r1, c2, r2, p, expected):
-        s1 = SDF.new_sphere(c1, r1)
-        s2 = SDF.new_sphere(c2, r2)
-        sdf = subtract(s1, s2)
+        s1 = Sphere(c1, r1)
+        s2 = Sphere(c2, r2)
+        sdf = subtract(s1.into(), s2.into())
         npt.assert_allclose(sdf.distance(p), expected)
