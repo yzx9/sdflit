@@ -5,6 +5,7 @@ mod object;
 mod primitive;
 mod scene;
 mod sdf;
+mod solid_geometry;
 mod vec3;
 
 use pyo3::prelude::*;
@@ -25,6 +26,7 @@ fn sdflit(_py: Python, m: &PyModule) -> PyResult<()> {
     // Material
     m.add_class::<material::DynMaterial>()?;
     m.add_class::<material::ColoredMaterial>()?;
+    m.add_class::<material::LinearGradientMaterial>()?;
 
     // Object
     m.add_class::<object::DynObject>()?;

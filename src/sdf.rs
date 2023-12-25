@@ -5,6 +5,20 @@ use std::sync::Arc;
 pub trait SDF: Send + Sync {
     fn distance(&self, p: Vec3f) -> f32;
 
+    fn hit(&self, p: Vec3f) -> Option<SDFHitInfo> {
+        let sd = self.distance(p);
+        if sd < 0.0 {
+            Some(SDFHitInfo {
+                distance: sd,
+                u: 0.0,
+                v: 0.0,
+                w: 0.0,
+            })
+        } else {
+            None
+        }
+    }
+
     fn inside(&self, p: Vec3f) -> bool {
         self.inside_bounding_box(p) && self.distance(p) < 0.0
     }
@@ -16,6 +30,17 @@ pub trait SDF: Send + Sync {
         p.x >= min.x && p.y >= min.y && p.z >= min.z && p.x <= max.x && p.y <= max.y && p.z <= max.z
     }
 }
+
+pub struct SDFHitInfo {
+    pub distance: f32,
+    pub u: f32,
+    pub v: f32,
+    pub w: f32,
+}
+
+/**
+ * Wrapper for SDF
+ */
 
 #[pyclass]
 #[pyo3(name = "SDF")]

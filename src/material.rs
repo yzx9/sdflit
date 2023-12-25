@@ -1,9 +1,12 @@
-use crate::vec3::{self, Vec3f};
-use pyo3::prelude::*;
+use crate::{
+    sdf::SDFHitInfo,
+    vec3::{self, Vec3f},
+};
+use pyo3::{exceptions::PyValueError, prelude::*};
 use std::sync::Arc;
 
 pub trait Material: Send + Sync {
-    fn hit(&self, u: f32, v: f32) -> Vec3f;
+    fn hit(&self, hit: SDFHitInfo) -> Vec3f;
 }
 
 /**
@@ -16,8 +19,8 @@ pub trait Material: Send + Sync {
 pub struct DynMaterial(Arc<dyn Material>);
 
 impl Material for DynMaterial {
-    fn hit(&self, u: f32, v: f32) -> Vec3f {
-        self.0.hit(u, v)
+    fn hit(&self, hit: SDFHitInfo) -> Vec3f {
+        self.0.hit(hit)
     }
 }
 
@@ -58,29 +61,72 @@ impl ColoredMaterial {
 }
 
 impl Material for ColoredMaterial {
-    fn hit(&self, _u: f32, _v: f32) -> Vec3f {
+    fn hit(&self, _hit: SDFHitInfo) -> Vec3f {
         self.color
     }
 }
 
 /**
- * Horizontal axis linear gradient
+ * Linear Gradient Material
  */
 
-struct VAxisLinearGradient {
-    c1: Vec3f,
-    c2: Vec3f,
+#[derive(Clone, Copy)]
+pub enum Axis {
+    U,
+    V,
+    W,
 }
 
-impl VAxisLinearGradient {
-    pub fn new(c1: Vec3f, c2: Vec3f) -> Arc<dyn Material> {
-        Arc::new(VAxisLinearGradient { c1, c2 })
+impl TryFrom<&str> for Axis {
+    type Error = ();
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        match value {
+            "u" | "U" => Ok(Self::U),
+            "v" | "V" => Ok(Self::V),
+            "w" | "W" => Ok(Self::W),
+            _ => Err(()),
+        }
     }
 }
 
-impl Material for VAxisLinearGradient {
-    fn hit(&self, u: f32, _v: f32) -> Vec3f {
-        let u = u.clamp(0.0, 1.0);
-        vec3::interpolate(self.c1, self.c2, u)
+#[pyclass]
+#[derive(Clone, Copy)]
+pub struct LinearGradientMaterial {
+    c1: Vec3f,
+    c2: Vec3f,
+    axis: Axis,
+}
+
+impl LinearGradientMaterial {
+    pub fn new(c1: Vec3f, c2: Vec3f, axis: Axis) -> Self {
+        Self { c1, c2, axis }
+    }
+}
+
+#[pymethods]
+impl LinearGradientMaterial {
+    #[new]
+    pub fn __new__(c1: (f32, f32, f32), c2: (f32, f32, f32), axis: &str) -> PyResult<Self> {
+        let axis: Axis = axis
+            .try_into()
+            .or_else(|_| Err(PyValueError::new_err("Invalid axis")))?;
+
+        Ok(Self::new(c1.into(), c2.into(), axis))
+    }
+
+    pub fn into(&self) -> DynMaterial {
+        DynMaterial(Arc::new(self.clone()))
+    }
+}
+
+impl Material for LinearGradientMaterial {
+    fn hit(&self, hit: SDFHitInfo) -> Vec3f {
+        let axis = match self.axis {
+            Axis::U => hit.u,
+            Axis::V => hit.v,
+            Axis::W => hit.w,
+        };
+        vec3::interpolate(self.c1, self.c2, axis.clamp(0.0, 1.0))
     }
 }

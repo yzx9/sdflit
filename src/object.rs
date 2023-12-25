@@ -64,12 +64,9 @@ impl SDFObject {
 
 impl Object for SDFObject {
     fn hit(&self, p: Vec3f) -> Option<Vec3f> {
-        let distance = self.sdf.distance(p);
-        if distance <= 0.0 {
-            Some(self.material.hit(0.0, 0.0)) // TODO
-        } else {
-            None
-        }
+        self.sdf
+            .hit(p)
+            .and_then(|info| Some(self.material.hit(info)))
     }
 
     fn bounding_box(&self) -> (Vec3f, Vec3f) {

@@ -1,8 +1,9 @@
-use std::sync::Arc;
-
-use crate::sdf::{DynSDF, SDF};
-use crate::vec3::Vec3f;
+use crate::{
+    sdf::{DynSDF, SDFHitInfo, SDF},
+    vec3::Vec3f,
+};
 use pyo3::prelude::*;
+use std::sync::Arc;
 
 #[pyclass]
 #[derive(Clone)]
@@ -12,17 +13,21 @@ pub struct Sphere {
     bounding_box: (Vec3f, Vec3f),
 }
 
-#[pymethods]
 impl Sphere {
-    #[new]
-    pub fn new(center: (f32, f32, f32), radius: f32) -> Self {
-        let center = Vec3f::from(center);
-
+    pub fn new(center: Vec3f, radius: f32) -> Self {
         Self {
             center,
             radius,
             bounding_box: (center - radius, center + radius),
         }
+    }
+}
+
+#[pymethods]
+impl Sphere {
+    #[new]
+    pub fn __new__(center: (f32, f32, f32), radius: f32) -> Self {
+        Self::new(center.into(), radius)
     }
 
     pub fn distance(&self, p: (f32, f32, f32)) -> f32 {
@@ -42,6 +47,20 @@ impl Sphere {
 impl SDF for Sphere {
     fn distance(&self, p: Vec3f) -> f32 {
         sd_sphere(p, self.center, self.radius)
+    }
+
+    fn hit(&self, p: Vec3f) -> Option<SDFHitInfo> {
+        let distance = SDF::distance(self, p);
+        if distance <= 0.0 {
+            Some(SDFHitInfo {
+                distance,
+                u: (distance / self.radius).clamp(0.0, 1.0),
+                v: 0.0,
+                w: 0.0,
+            })
+        } else {
+            None
+        }
     }
 
     fn bounding_box(&self) -> (Vec3f, Vec3f) {

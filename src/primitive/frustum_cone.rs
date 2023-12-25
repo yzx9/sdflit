@@ -1,5 +1,8 @@
-use crate::sdf::{DynSDF, SDF};
-use crate::vec3::{self, Vec3f};
+use crate::{
+    sdf::{DynSDF, SDF},
+    solid_geometry::proj_vector_on_plane,
+    vec3::{self, Vec3f},
+};
 use pyo3::prelude::*;
 use std::sync::Arc;
 
@@ -13,13 +16,8 @@ pub struct FrustumCone {
     bounding_box: (Vec3f, Vec3f),
 }
 
-#[pymethods]
 impl FrustumCone {
-    #[new]
-    pub fn new(a: (f32, f32, f32), b: (f32, f32, f32), ra: f32, rb: f32) -> FrustumCone {
-        let a = Vec3f::from(a);
-        let b = Vec3f::from(b);
-
+    pub fn new(a: Vec3f, b: Vec3f, ra: f32, rb: f32) -> FrustumCone {
         let bounding_box = aabb_frustum_cone(a, b, ra, rb);
         Self {
             a,
@@ -28,6 +26,14 @@ impl FrustumCone {
             rb,
             bounding_box,
         }
+    }
+}
+
+#[pymethods]
+impl FrustumCone {
+    #[new]
+    pub fn __new__(a: (f32, f32, f32), b: (f32, f32, f32), ra: f32, rb: f32) -> FrustumCone {
+        Self::new(a.into(), b.into(), ra, rb)
     }
 
     pub fn distance(&self, p: (f32, f32, f32)) -> f32 {
@@ -57,9 +63,9 @@ impl SDF for FrustumCone {
 fn aabb_frustum_cone(a: Vec3f, b: Vec3f, ra: f32, rb: f32) -> (Vec3f, Vec3f) {
     let up = a - b;
 
-    let vx = project_vector_on_plane(Vec3f::new(1.0, 0.0, 0.0), up);
-    let vy = project_vector_on_plane(Vec3f::new(0.0, 1.0, 0.0), up);
-    let vz = project_vector_on_plane(Vec3f::new(0.0, 0.0, 1.0), up);
+    let vx = proj_vector_on_plane(Vec3f::new(1.0, 0.0, 0.0), up);
+    let vy = proj_vector_on_plane(Vec3f::new(0.0, 1.0, 0.0), up);
+    let vz = proj_vector_on_plane(Vec3f::new(0.0, 0.0, 1.0), up);
 
     let a1 = a - vx * ra - vy * ra - vz * ra;
     let a2 = a + vx * ra + vy * ra + vz * ra;
@@ -83,17 +89,4 @@ fn sd_frustum_cone(p: Vec3f, a: Vec3f, b: Vec3f, ra: f32, rb: f32) -> f32 {
     let cby = paba - f;
     let s = if cbx < 0.0 && cay < 0.0 { -1.0 } else { 1.0 };
     return s * (f32::min(cax * cax + cay * cay * baba, cbx * cbx + cby * cby * baba)).sqrt();
-}
-
-fn project_vector_on_plane(vec: Vec3f, plane_normal_vec: Vec3f) -> Vec3f {
-    let v = vec;
-    let n = plane_normal_vec.normalize();
-
-    // Project v onto n
-    let projection_on_n = n * vec3::dot(v, n);
-
-    // Project v onto the plane
-    let projection_on_plane = v - projection_on_n;
-
-    projection_on_plane
 }
