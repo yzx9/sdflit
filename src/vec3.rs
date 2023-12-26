@@ -14,10 +14,6 @@ impl<T> Vec3<T> {
     pub fn new(x: T, y: T, z: T) -> Vec3<T> {
         Vec3 { x, y, z }
     }
-
-    pub fn tuple(self) -> (T, T, T) {
-        (self.x, self.y, self.z)
-    }
 }
 
 impl<T> From<(T, T, T)> for Vec3<T> {
@@ -177,8 +173,8 @@ pub fn dot<T: Add<Output = T> + Mul<Output = T>>(a: Vec3<T>, b: Vec3<T>) -> T {
 }
 
 pub fn maximum<T: PartialOrd>(a: Vec3<T>, b: Vec3<T>) -> Vec3<T> {
-    let (xa, ya, za) = a.tuple();
-    let (xb, yb, zb) = b.tuple();
+    let (xa, ya, za) = a.into();
+    let (xb, yb, zb) = b.into();
     let x = if xa > xb { xa } else { xb };
     let y = if ya > yb { ya } else { yb };
     let z = if za > zb { za } else { zb };
@@ -186,8 +182,8 @@ pub fn maximum<T: PartialOrd>(a: Vec3<T>, b: Vec3<T>) -> Vec3<T> {
 }
 
 pub fn minimum<T: PartialOrd>(a: Vec3<T>, b: Vec3<T>) -> Vec3<T> {
-    let (xa, ya, za) = a.tuple();
-    let (xb, yb, zb) = b.tuple();
+    let (xa, ya, za) = a.into();
+    let (xb, yb, zb) = b.into();
     let x = if xa < xb { xa } else { xb };
     let y = if ya < yb { ya } else { yb };
     let z = if za < zb { za } else { zb };

@@ -3,6 +3,7 @@ mod composition;
 mod material;
 mod object;
 mod primitive;
+mod sampler;
 mod scene;
 mod sdf;
 mod solid_geometry;
@@ -35,6 +36,10 @@ fn sdflit(_py: Python, m: &PyModule) -> PyResult<()> {
     // Scene
     m.add_class::<scene::DynScene>()?;
     m.add_class::<scene::ObjectsScene>()?;
+
+    // Sampler
+    m.add_class::<sampler::UniformSampler>()?;
+    m.add_class::<sampler::RangeSampler>()?;
 
     Ok(())
 }

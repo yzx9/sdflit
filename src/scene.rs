@@ -43,6 +43,12 @@ impl From<Arc<dyn Scene>> for DynScene {
     }
 }
 
+impl Into<Arc<dyn Scene>> for DynScene {
+    fn into(self) -> Arc<dyn Scene> {
+        self.0
+    }
+}
+
 /**
  * A scene with a list of objects
  */

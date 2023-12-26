@@ -1,4 +1,7 @@
-from typing import Literal, Tuple
+from typing import Literal, Self, Tuple
+
+import numpy as np
+import numpy.typing as npt
 
 __all__ = [
     # fmt: off
@@ -8,6 +11,7 @@ __all__ = [
     "Material", "ColoredMaterial", "LinearGradientMaterial",
     "Object", "SDFObject",
     "Scene", "ObjectsScene",
+    "RangeSampler", "UniformSampler"
     # fmt: on
 ]
 
@@ -76,3 +80,13 @@ class ObjectsScene:
     def build_bvh(self) -> None: ...
     def set_background(self, background: Vec3f) -> None: ...
     def into(self) -> Scene: ...
+
+# Sampler
+
+class RangeSampler:
+    def __new__(cls, min: Vec3f, max: Vec3f, stride: Vec3f) -> Self: ...
+    def sample(self, scene: Scene) -> npt.NDArray[np.float32]: ...
+
+class UniformSampler:
+    def __new__(cls, min: Vec3f, max: Vec3f) -> Self: ...
+    def sample(self, scene: Scene, count: int) -> npt.NDArray[np.float32]: ...
