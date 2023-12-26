@@ -25,6 +25,14 @@ impl DynScene {
     fn hit(&self, p: (f32, f32, f32)) -> (f32, f32, f32) {
         self.0.hit(Vec3f::from(p)).into()
     }
+
+    fn bounding_box(&self) -> Option<((f32, f32, f32), (f32, f32, f32))> {
+        if let Some((min, max)) = self.0.bounding_box() {
+            Some((min.into(), max.into()))
+        } else {
+            None
+        }
+    }
 }
 
 impl Scene for DynScene {
@@ -94,6 +102,14 @@ impl ObjectsScene {
 
     pub fn set_background(&mut self, background: (f32, f32, f32)) {
         self.background = background.into()
+    }
+
+    pub fn bounding_box(&self) -> Option<((f32, f32, f32), (f32, f32, f32))> {
+        if let Some((min, max)) = Scene::bounding_box(self) {
+            Some((min.into(), max.into()))
+        } else {
+            None
+        }
     }
 
     pub fn into(&self) -> DynScene {

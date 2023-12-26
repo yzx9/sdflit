@@ -56,6 +56,11 @@ impl DynSDF {
     fn inside(&self, p: (f32, f32, f32)) -> bool {
         SDF::inside(self, Vec3f::from(p))
     }
+
+    fn bounding_box(&self) -> ((f32, f32, f32), (f32, f32, f32)) {
+        let (min, max) = SDF::bounding_box(self);
+        ((min.x, min.y, min.z), (max.x, max.y, max.z))
+    }
 }
 
 impl SDF for DynSDF {

@@ -44,6 +44,11 @@ impl FrustumCone {
         SDF::inside(self, Vec3f::from(p))
     }
 
+    pub fn bounding_box(&self) -> ((f32, f32, f32), (f32, f32, f32)) {
+        let (min, max) = self.bounding_box;
+        ((min.x, min.y, min.z), (max.x, max.y, max.z))
+    }
+
     pub fn into(&self) -> DynSDF {
         let arc: Arc<dyn SDF> = Arc::new(self.clone());
         DynSDF::from(arc)
