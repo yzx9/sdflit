@@ -4,6 +4,11 @@ build-backend = "maturin"
 
 [project]
 name = "sdflit"
+description = "Fast and Robust Signed Distance Function Library"
+authors = [{ name = "yzx9", email = "yuan.zx@outlook.com" }]
+readme = "README.md"
+keywords = ["sdf", "pyo3"]
+license = { text = "Apache-2.0" }
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Rust",
@@ -11,6 +16,9 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dynamic = ["version"]
+
+[project.urls]
+repository = "https://github.com/yzx9/sdflit"
 
 [tool.maturin]
 features = ["pyo3/extension-module"]
