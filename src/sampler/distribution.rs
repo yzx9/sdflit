@@ -2,7 +2,7 @@ use crate::{
     scene::{DynScene, Scene},
     vec3::Vec3f,
 };
-use ndarray::{prelude::*, Array, OwnedRepr};
+use ndarray::prelude::*;
 use numpy::{IntoPyArray, PyArray2};
 use pyo3::prelude::*;
 use rand::{
@@ -26,11 +26,7 @@ impl<D> DistributionSampler<D>
 where
     D: Distribution<f32> + Copy,
 {
-    fn sample(
-        &self,
-        scene: Arc<dyn Scene>,
-        count: usize,
-    ) -> ArrayBase<OwnedRepr<f32>, Dim<[usize; 2]>> {
+    fn sample(&self, scene: Arc<dyn Scene>, count: usize) -> Array2<f32> {
         let samples = DistributionSamples {
             scene,
             count,

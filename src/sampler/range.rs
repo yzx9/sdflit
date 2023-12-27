@@ -2,7 +2,7 @@ use crate::{
     scene::{DynScene, Scene},
     vec3::Vec3f,
 };
-use ndarray::{Array, ArrayBase, Dim, OwnedRepr};
+use ndarray::prelude::*;
 use numpy::{IntoPyArray, PyArray4};
 use pyo3::prelude::*;
 use std::sync::Arc;
@@ -19,7 +19,7 @@ impl RangeSampler {
         Self { min, max, stride }
     }
 
-    fn sample(&self, scene: Arc<dyn Scene>) -> ArrayBase<OwnedRepr<f32>, Dim<[usize; 4]>> {
+    fn sample(&self, scene: Arc<dyn Scene>) -> Array4<f32> {
         let samples = RangeSamples {
             cur: self.min,
             scene,
