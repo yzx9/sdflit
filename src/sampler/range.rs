@@ -57,11 +57,9 @@ impl RangeSampler {
     }
 
     #[pyo3(name = "sample")]
-    fn py_sample(&self, scene: DynScene) -> PyResult<Py<PyArray4<f32>>> {
+    fn py_sample(&self, scene: DynScene) -> Py<PyArray4<f32>> {
         let samples = self.sample(scene.into());
-        Python::with_gil(|py| -> PyResult<Py<PyArray4<f32>>> {
-            Ok(samples.to_owned().into_pyarray(py).to_owned())
-        })
+        Python::with_gil(|py| samples.into_pyarray(py).to_owned())
     }
 }
 
