@@ -59,7 +59,7 @@ impl DynSDF {
 
     fn bounding_box(&self) -> ((f32, f32, f32), (f32, f32, f32)) {
         let (min, max) = SDF::bounding_box(self);
-        ((min.x, min.y, min.z), (max.x, max.y, max.z))
+        (min.into(), max.into())
     }
 }
 

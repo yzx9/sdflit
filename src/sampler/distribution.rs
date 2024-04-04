@@ -100,7 +100,7 @@ impl UniformSampler {
         Self::new(min.into(), max.into())
     }
 
-    fn sample(&mut self, scene: DynScene, count: usize) -> Py<PyArray2<f32>> {
+    fn sample(&self, scene: DynScene, count: usize) -> Py<PyArray2<f32>> {
         let samples = self.0.sample(scene.into(), count);
         Python::with_gil(|py| samples.into_pyarray(py).to_owned())
     }
