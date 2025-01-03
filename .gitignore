@@ -1,4 +1,5 @@
 .env
 .pytest_cache
+.direnv/
 __pycache__/
 target
