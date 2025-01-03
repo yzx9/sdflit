@@ -2,8 +2,7 @@ use crate::{
     scene::{DynScene, Scene},
     vec3::Vec3f,
 };
-use ndarray::prelude::*;
-use numpy::{IntoPyArray, PyArray4};
+use numpy::{ndarray::prelude::*, IntoPyArray, PyArray4};
 use pyo3::prelude::*;
 use std::sync::Arc;
 
@@ -57,9 +56,9 @@ impl RangeSampler {
     }
 
     #[pyo3(name = "sample")]
-    fn py_sample(&self, scene: DynScene) -> Py<PyArray4<f32>> {
+    fn py_sample<'py>(&self, py: Python<'py>, scene: DynScene) -> Bound<'py, PyArray4<f32>> {
         let samples = self.sample(scene.into());
-        Python::with_gil(|py| samples.into_pyarray(py).to_owned())
+        samples.into_pyarray(py)
     }
 }
 

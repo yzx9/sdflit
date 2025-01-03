@@ -2,8 +2,7 @@ use crate::{
     scene::{DynScene, Scene},
     vec3::Vec3f,
 };
-use ndarray::prelude::*;
-use numpy::{IntoPyArray, PyArray2};
+use numpy::{ndarray::prelude::*, IntoPyArray, PyArray2};
 use pyo3::prelude::*;
 use rand::{
     distributions::{Distribution, Uniform},
@@ -100,8 +99,13 @@ impl UniformSampler {
         Self::new(min.into(), max.into())
     }
 
-    fn sample(&self, scene: DynScene, count: usize) -> Py<PyArray2<f32>> {
+    fn sample<'py>(
+        &self,
+        py: Python<'py>,
+        scene: DynScene,
+        count: usize,
+    ) -> Bound<'py, PyArray2<f32>> {
         let samples = self.0.sample(scene.into(), count);
-        Python::with_gil(|py| samples.into_pyarray(py).to_owned())
+        samples.into_pyarray(py)
     }
 }

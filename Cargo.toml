@@ -9,7 +9,6 @@ name = "sdflit"
 crate-type = ["cdylib"]
 
 [dependencies]
-ndarray = "0.15.0"
-numpy = "0.20"
-pyo3 = "0.20.0"
+numpy = "0.23.0"
+pyo3 = "0.23.3"
 rand = "0.8.5"

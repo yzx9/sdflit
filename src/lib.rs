@@ -12,7 +12,7 @@ mod vec3;
 use pyo3::prelude::*;
 
 #[pymodule]
-fn sdflit(_py: Python, m: &PyModule) -> PyResult<()> {
+fn sdflit(m: &Bound<'_, PyModule>) -> PyResult<()> {
     // SDF and Primitives
     m.add_class::<sdf::DynSDF>()?;
     m.add_class::<primitive::FrustumCone>()?;
