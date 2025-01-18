@@ -49,8 +49,6 @@
             toolchain.rustfmt
           ];
 
-          # python
-          python = pkgs.python312;
         in
         {
           default = pkgs.mkShell {
@@ -58,7 +56,12 @@
               # rust
               rust
               rust-analyzer
-              python
+              maturin
+
+              # python
+              python313
+              python3Packages.pytest
+
               just
             ];
 
