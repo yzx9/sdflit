@@ -15,7 +15,7 @@ use crate::vec3::Vec3f;
 /**
  * Distribution Sampler
  */
-
+#[derive(Debug)]
 pub struct DistributionSampler<D>
 where
     D: Distribution<f32>,
@@ -62,10 +62,10 @@ where
     type Item = Vec3f;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.count <= 0 {
+        if self.count == 0 {
             return None;
         }
-        self.count = self.count - 1;
+        self.count -= 1;
 
         let x = self.dist.0.sample(&mut self.rng);
         let y = self.dist.1.sample(&mut self.rng);
@@ -80,6 +80,7 @@ where
  */
 
 #[pyclass]
+#[derive(Debug)]
 pub struct UniformSampler(DistributionSampler<Uniform<f32>>);
 
 impl UniformSampler {

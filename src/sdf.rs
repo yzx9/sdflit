@@ -8,6 +8,7 @@ use pyo3::prelude::*;
 
 use crate::vec3::Vec3f;
 
+#[allow(clippy::upper_case_acronyms)]
 pub trait SDF: Send + Sync {
     fn distance(&self, p: Vec3f) -> f32;
 
@@ -37,6 +38,7 @@ pub trait SDF: Send + Sync {
     }
 }
 
+#[derive(Clone, Copy, Debug)]
 pub struct SDFHitInfo {
     pub distance: f32,
     pub u: f32,
@@ -51,6 +53,7 @@ pub struct SDFHitInfo {
 #[pyclass]
 #[pyo3(name = "SDF")]
 #[derive(Clone)]
+#[allow(missing_debug_implementations)]
 pub struct DynSDF(Arc<dyn SDF>);
 
 #[pymethods]

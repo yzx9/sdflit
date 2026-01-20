@@ -11,6 +11,7 @@ use crate::scene::{DynScene, Scene};
 use crate::vec3::Vec3f;
 
 #[pyclass]
+#[derive(Clone, Copy, Debug)]
 pub struct RangeSampler {
     min: Vec3f,
     max: Vec3f,
@@ -44,6 +45,7 @@ impl RangeSampler {
 
     fn samples_shape(&self) -> (usize, usize, usize) {
         let size = (self.max - self.min) / self.stride;
+        #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
         (
             size.x.ceil() as usize,
             size.y.ceil() as usize,

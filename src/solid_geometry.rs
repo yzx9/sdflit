@@ -19,7 +19,5 @@ pub fn proj_vector_on_plane(vec: Vec3f, plane_normal_vec: Vec3f) -> Vec3f {
     let projection_on_n = n * vec3::dot(v, n);
 
     // Project v onto the plane
-    let projection_on_plane = v - projection_on_n;
-
-    projection_on_plane
+    v - projection_on_n
 }

@@ -2,6 +2,28 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+//! SDF (Signed Distance Field) library with Python bindings
+//!
+//! This library provides primitives, composition operations, and samplers
+//! for working with signed distance fields.
+
+#![warn(
+    trivial_casts,
+    trivial_numeric_casts,
+    missing_copy_implementations,
+    missing_debug_implementations,
+    missing_docs,
+    unsafe_code,
+    unstable_features,
+    unused_import_braces,
+    unused_qualifications,
+    clippy::dbg_macro,
+    clippy::indexing_slicing,
+    clippy::pedantic
+)]
+// Allow certain clippy lints that are too restrictive for this crate
+#![allow(clippy::many_single_char_names)]
+
 mod accelerator;
 mod composition;
 mod material;

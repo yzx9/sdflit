@@ -28,9 +28,9 @@ impl<T> From<(T, T, T)> for Vec3<T> {
     }
 }
 
-impl<T> Into<[T; 3]> for Vec3<T> {
-    fn into(self) -> [T; 3] {
-        [self.x, self.y, self.z]
+impl<T> From<Vec3<T>> for [T; 3] {
+    fn from(val: Vec3<T>) -> Self {
+        [val.x, val.y, val.z]
     }
 }
 
@@ -44,9 +44,9 @@ impl<T: Copy> From<[T; 3]> for Vec3<T> {
     }
 }
 
-impl<T> Into<(T, T, T)> for Vec3<T> {
-    fn into(self) -> (T, T, T) {
-        (self.x, self.y, self.z)
+impl<T> From<Vec3<T>> for (T, T, T) {
+    fn from(val: Vec3<T>) -> Self {
+        (val.x, val.y, val.z)
     }
 }
 
@@ -56,9 +56,9 @@ impl<T: Copy> TryFrom<Vec<T>> for Vec3<T> {
     fn try_from(v: Vec<T>) -> Result<Self, Self::Error> {
         if v.len() == 3 {
             Ok(Vec3 {
-                x: v[0],
-                y: v[1],
-                z: v[2],
+                x: v.first().copied().unwrap(),
+                y: v.get(1).copied().unwrap(),
+                z: v.get(2).copied().unwrap(),
             })
         } else {
             Err("Vec3 only accepts 3 values")
@@ -66,9 +66,9 @@ impl<T: Copy> TryFrom<Vec<T>> for Vec3<T> {
     }
 }
 
-impl<T> Into<Vec<T>> for Vec3<T> {
-    fn into(self) -> Vec<T> {
-        vec![self.x, self.y, self.z]
+impl<T> From<Vec3<T>> for Vec<T> {
+    fn from(val: Vec3<T>) -> Self {
+        vec![val.x, val.y, val.z]
     }
 }
 
@@ -198,10 +198,10 @@ pub fn norm(v: Vec3f) -> f32 {
 
 pub fn normalize(v: Vec3f) -> Vec3f {
     let norm = v.norm();
-    if norm != 0.0 {
-        v / norm
-    } else {
+    if norm == 0.0 {
         v
+    } else {
+        v / norm
     }
 }
 
@@ -218,19 +218,19 @@ pub type Vec3f = Vec3<f32>;
 
 #[cfg(test)]
 mod tests {
-    use super::{dot, Vec3f};
+    use super::{dot, minimum, Vec3f};
 
     #[test]
     fn dot_two() {
         let v1 = Vec3f::new(1., 2., 3.);
         let v2 = Vec3f::new(4., 5., 6.);
-        assert_eq!(dot(v1, v2), 32.);
+        assert!((dot(v1, v2) - 32.).abs() < f32::EPSILON);
     }
 
     #[test]
     fn minimum_two() {
         let v1 = Vec3f::new(1., 2., 3.);
         let v2 = Vec3f::new(4., 5., 6.);
-        assert_eq!(dot(v1, v2), 32.);
+        assert_eq!(minimum(v1, v2), Vec3f::new(1., 2., 3.));
     }
 }

@@ -22,11 +22,12 @@ pub trait Object: Send + Sync {
 #[pyclass]
 #[pyo3[name="Object"]]
 #[derive(Clone)]
+#[allow(missing_debug_implementations)]
 pub struct DynObject(Arc<dyn Object>);
 
-impl Into<Arc<dyn Object>> for DynObject {
-    fn into(self) -> Arc<dyn Object> {
-        self.0
+impl From<DynObject> for Arc<dyn Object> {
+    fn from(val: DynObject) -> Self {
+        val.0
     }
 }
 
@@ -46,6 +47,7 @@ impl Object for DynObject {
 
 #[pyclass]
 #[derive(Clone)]
+#[allow(missing_debug_implementations)]
 pub struct SDFObject {
     sdf: DynSDF,
     material: Arc<dyn Material>,
@@ -68,9 +70,7 @@ impl SDFObject {
 
 impl Object for SDFObject {
     fn hit(&self, p: Vec3f) -> Option<Vec3f> {
-        self.sdf
-            .hit(p)
-            .and_then(|info| Some(self.material.hit(info)))
+        self.sdf.hit(p).map(|info| self.material.hit(info))
     }
 
     fn bounding_box(&self) -> (Vec3f, Vec3f) {

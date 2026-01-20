@@ -15,7 +15,7 @@ pub trait Accelerator: Send + Sync {
 /**
  * Bounding Volume Hierarchy
  */
-
+#[allow(clippy::upper_case_acronyms)]
 pub struct BVH {
     root: Option<BVHNode>,
     objects: Vec<Arc<dyn Object>>,
@@ -36,16 +36,15 @@ impl BVH {
 impl Accelerator for BVH {
     fn hit(&self, p: Vec3f) -> Option<Vec3f> {
         match &self.root {
-            Some(r) => r.hit(p).find_map(|idx| self.objects[idx].hit(p)),
+            Some(r) => r
+                .hit(p)
+                .find_map(|idx| self.objects.get(idx).and_then(|obj| obj.hit(p))),
             None => None,
         }
     }
 
     fn bounding_box(&self) -> Option<(Vec3f, Vec3f)> {
-        match &self.root {
-            Some(r) => Some(r.bounding_box),
-            None => None,
-        }
+        self.root.as_ref().map(|r| r.bounding_box)
     }
 }
 
@@ -71,9 +70,9 @@ impl BVHNode {
         if objects.len() == 1 {
             return BVHNode {
                 children: None,
-                bounding_box: objects[0].bounding_box,
+                bounding_box: objects.first().map(|o| o.bounding_box).unwrap(),
                 n: 1,
-                index: objects[0].index,
+                index: objects.first().map(|o| o.index).unwrap(),
             };
         }
 
@@ -98,11 +97,11 @@ impl BVHNode {
             children: Some((Box::new(Self::new_(left)), Box::new(Self::new_(right)))),
             bounding_box,
             n: objects.len(),
-            index: objects[0].index,
+            index: objects.first().map(|o| o.index).unwrap(),
         }
     }
 
-    fn hit(&self, p: Vec3f) -> BVHHitIter {
+    fn hit(&self, p: Vec3f) -> BVHHitIter<'_> {
         BVHHitIter { s: vec![&self], p }
     }
 
@@ -117,7 +116,7 @@ struct BVHHitIter<'a> {
     p: Vec3f,
 }
 
-impl<'a> Iterator for BVHHitIter<'a> {
+impl Iterator for BVHHitIter<'_> {
     type Item = usize;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -126,9 +125,9 @@ impl<'a> Iterator for BVHHitIter<'a> {
                 true if node.n == 1 => return Some(node.index),
                 true => {
                     if let Some((left, right)) = &node.children {
-                        self.s.push(&left);
-                        self.s.push(&right);
-                    };
+                        self.s.push(left);
+                        self.s.push(right);
+                    }
                 }
                 _ => (),
             }

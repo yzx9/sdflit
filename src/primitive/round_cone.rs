@@ -11,7 +11,7 @@ use crate::solid_geometry::proj_p_to_line;
 use crate::vec3::{self, Vec3f};
 
 #[pyclass]
-#[derive(Clone)]
+#[derive(Clone, Copy, Debug)]
 pub struct RoundCone {
     a: Vec3f,
     b: Vec3f,
@@ -56,7 +56,7 @@ impl RoundCone {
     }
 
     pub fn into(&self) -> DynSDF {
-        let arc: Arc<dyn SDF> = Arc::new(self.clone());
+        let arc: Arc<dyn SDF> = Arc::new(*self);
         DynSDF::from(arc)
     }
 }

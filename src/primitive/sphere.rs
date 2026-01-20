@@ -10,7 +10,7 @@ use crate::sdf::{DynSDF, SDFHitInfo, SDF};
 use crate::vec3::Vec3f;
 
 #[pyclass]
-#[derive(Clone)]
+#[derive(Clone, Copy, Debug)]
 pub struct Sphere {
     center: Vec3f,
     radius: f32,
@@ -48,7 +48,7 @@ impl Sphere {
     }
 
     pub fn into(&self) -> DynSDF {
-        let arc: Arc<dyn SDF> = Arc::new(self.clone());
+        let arc: Arc<dyn SDF> = Arc::new(*self);
         DynSDF::from(arc)
     }
 }

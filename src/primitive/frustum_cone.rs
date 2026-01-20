@@ -11,7 +11,7 @@ use crate::solid_geometry::proj_vector_on_plane;
 use crate::vec3::{self, Vec3f};
 
 #[pyclass]
-#[derive(Clone)]
+#[derive(Clone, Copy, Debug)]
 pub struct FrustumCone {
     a: Vec3f,
     b: Vec3f,
@@ -54,7 +54,7 @@ impl FrustumCone {
     }
 
     pub fn into(&self) -> DynSDF {
-        let arc: Arc<dyn SDF> = Arc::new(self.clone());
+        let arc: Arc<dyn SDF> = Arc::new(*self);
         DynSDF::from(arc)
     }
 }
@@ -88,14 +88,14 @@ fn sd_frustum_cone(p: Vec3f, a: Vec3f, b: Vec3f, ra: f32, rb: f32) -> f32 {
     let rba = rb - ra;
     let baba = vec3::dot(b - a, b - a);
     let papa = vec3::dot(p - a, p - a);
-    let paba = vec3::dot(p - a, b - a) / baba;
-    let x = (papa - paba * paba * baba).sqrt();
-    let cax = f32::max(0.0, x - (if paba < 0.5 { ra } else { rb }));
-    let cay = (paba - 0.5).abs() - 0.5;
+    let paba_b = vec3::dot(p - a, b - a) / baba;
+    let x = (papa - paba_b * paba_b * baba).sqrt();
+    let cax = f32::max(0.0, x - (if paba_b < 0.5 { ra } else { rb }));
+    let cay = (paba_b - 0.5).abs() - 0.5;
     let k = rba * rba + baba;
-    let f = ((rba * (x - ra) + paba * baba) / k).clamp(0.0, 1.0);
+    let f = ((rba * (x - ra) + paba_b * baba) / k).clamp(0.0, 1.0);
     let cbx = x - ra - f * rba;
-    let cby = paba - f;
+    let cby = paba_b - f;
     let s = if cbx < 0.0 && cay < 0.0 { -1.0 } else { 1.0 };
-    return s * (f32::min(cax * cax + cay * cay * baba, cbx * cbx + cby * cby * baba)).sqrt();
+    s * (f32::min(cax * cax + cay * cay * baba, cbx * cbx + cby * cby * baba)).sqrt()
 }

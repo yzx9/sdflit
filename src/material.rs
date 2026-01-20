@@ -20,6 +20,7 @@ pub trait Material: Send + Sync {
 #[pyclass]
 #[pyo3(name = "Material")]
 #[derive(Clone)]
+#[allow(missing_debug_implementations)]
 pub struct DynMaterial(Arc<dyn Material>);
 
 impl Material for DynMaterial {
@@ -34,9 +35,9 @@ impl From<Arc<dyn Material>> for DynMaterial {
     }
 }
 
-impl Into<Arc<dyn Material>> for DynMaterial {
-    fn into(self) -> Arc<dyn Material> {
-        Arc::from(self)
+impl From<DynMaterial> for Arc<dyn Material> {
+    fn from(val: DynMaterial) -> Self {
+        val.0
     }
 }
 
@@ -45,7 +46,7 @@ impl Into<Arc<dyn Material>> for DynMaterial {
  */
 
 #[pyclass]
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct ColoredMaterial {
     color: Vec3f,
 }
@@ -60,7 +61,7 @@ impl ColoredMaterial {
     }
 
     pub fn into(&self) -> DynMaterial {
-        DynMaterial(Arc::new(self.clone()))
+        DynMaterial(Arc::new(*self))
     }
 }
 
@@ -74,7 +75,7 @@ impl Material for ColoredMaterial {
  * Linear Gradient Material
  */
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum Axis {
     U,
     V,
@@ -95,7 +96,7 @@ impl TryFrom<&str> for Axis {
 }
 
 #[pyclass]
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct LinearGradientMaterial {
     c1: Vec3f,
     c2: Vec3f,
@@ -114,13 +115,13 @@ impl LinearGradientMaterial {
     pub fn __new__(c1: (f32, f32, f32), c2: (f32, f32, f32), axis: &str) -> PyResult<Self> {
         let axis: Axis = axis
             .try_into()
-            .or_else(|_| Err(PyValueError::new_err("Invalid axis")))?;
+            .map_err(|()| PyValueError::new_err("Invalid axis"))?;
 
         Ok(Self::new(c1.into(), c2.into(), axis))
     }
 
     pub fn into(&self) -> DynMaterial {
-        DynMaterial(Arc::new(self.clone()))
+        DynMaterial(Arc::new(*self))
     }
 }
 

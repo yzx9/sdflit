@@ -22,6 +22,7 @@ pub trait Scene: Send + Sync {
 #[pyclass]
 #[pyo3(name = "Scene")]
 #[derive(Clone)]
+#[allow(missing_debug_implementations)]
 pub struct DynScene(Arc<dyn Scene>);
 
 #[pymethods]
@@ -30,6 +31,7 @@ impl DynScene {
         self.0.hit(Vec3f::from(p)).into()
     }
 
+    #[allow(clippy::type_complexity)]
     fn bounding_box(&self) -> Option<((f32, f32, f32), (f32, f32, f32))> {
         if let Some((min, max)) = self.0.bounding_box() {
             Some((min.into(), max.into()))
@@ -55,9 +57,9 @@ impl From<Arc<dyn Scene>> for DynScene {
     }
 }
 
-impl Into<Arc<dyn Scene>> for DynScene {
-    fn into(self) -> Arc<dyn Scene> {
-        self.0
+impl From<DynScene> for Arc<dyn Scene> {
+    fn from(val: DynScene) -> Self {
+        val.0
     }
 }
 
@@ -67,6 +69,7 @@ impl Into<Arc<dyn Scene>> for DynScene {
 
 #[pyclass]
 #[derive(Clone)]
+#[allow(missing_debug_implementations)]
 pub struct ObjectsScene {
     objects: Option<Vec<Arc<dyn Object>>>,
     background: Vec3f,
@@ -105,9 +108,10 @@ impl ObjectsScene {
     }
 
     pub fn set_background(&mut self, background: (f32, f32, f32)) {
-        self.background = background.into()
+        self.background = background.into();
     }
 
+    #[allow(clippy::type_complexity)]
     pub fn bounding_box(&self) -> Option<((f32, f32, f32), (f32, f32, f32))> {
         if let Some((min, max)) = Scene::bounding_box(self) {
             Some((min.into(), max.into()))
@@ -136,10 +140,13 @@ impl Scene for ObjectsScene {
             (Some(acc), _) => acc.bounding_box(),
             (None, Some(objs)) => match objs.len() {
                 0 => None,
-                _ => Some(objs.iter().fold(objs[0].bounding_box(), |(min, max), obj| {
-                    let (obj_min, obj_max) = obj.bounding_box();
-                    (vec3::minimum(min, obj_min), vec3::maximum(max, obj_max))
-                })),
+                _ => Some(
+                    objs.iter()
+                        .fold(objs.first()?.bounding_box(), |(min, max), obj| {
+                            let (obj_min, obj_max) = obj.bounding_box();
+                            (vec3::minimum(min, obj_min), vec3::maximum(max, obj_max))
+                        }),
+                ),
             },
             (None, None) => None,
         }
