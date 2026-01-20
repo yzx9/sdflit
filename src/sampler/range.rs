@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{
-    scene::{DynScene, Scene},
-    vec3::Vec3f,
-};
+use std::sync::Arc;
+
 use numpy::{ndarray::prelude::*, IntoPyArray, PyArray4};
 use pyo3::prelude::*;
-use std::sync::Arc;
+
+use crate::scene::{DynScene, Scene};
+use crate::vec3::Vec3f;
 
 #[pyclass]
 pub struct RangeSampler {

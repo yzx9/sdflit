@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{
-    sdf::{DynSDF, SDFHitInfo, SDF},
-    solid_geometry::proj_p_to_line,
-    vec3::{self, Vec3f},
-};
-use pyo3::prelude::*;
 use std::sync::Arc;
+
+use pyo3::prelude::*;
+
+use crate::sdf::{DynSDF, SDFHitInfo, SDF};
+use crate::solid_geometry::proj_p_to_line;
+use crate::vec3::{self, Vec3f};
 
 #[pyclass]
 #[derive(Clone)]

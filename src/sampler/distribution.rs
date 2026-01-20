@@ -2,17 +2,15 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{
-    scene::{DynScene, Scene},
-    vec3::Vec3f,
-};
+use std::sync::Arc;
+
 use numpy::{ndarray::prelude::*, IntoPyArray, PyArray2};
 use pyo3::prelude::*;
-use rand::{
-    distributions::{Distribution, Uniform},
-    rngs::ThreadRng,
-};
-use std::sync::Arc;
+use rand::distributions::{Distribution, Uniform};
+use rand::rngs::ThreadRng;
+
+use crate::scene::{DynScene, Scene};
+use crate::vec3::Vec3f;
 
 /**
  * Distribution Sampler

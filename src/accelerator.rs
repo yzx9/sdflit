@@ -2,9 +2,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+use std::{cmp::Ordering, sync::Arc};
+
 use crate::object::Object;
 use crate::vec3::{self, Vec3f};
-use std::{cmp::Ordering, sync::Arc};
 
 pub trait Accelerator: Send + Sync {
     fn hit(&self, p: Vec3f) -> Option<Vec3f>;

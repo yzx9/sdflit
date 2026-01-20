@@ -2,12 +2,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{
-    sdf::SDFHitInfo,
-    vec3::{self, Vec3f},
-};
-use pyo3::{exceptions::PyValueError, prelude::*};
 use std::sync::Arc;
+
+use pyo3::{exceptions::PyValueError, prelude::*};
+
+use crate::sdf::SDFHitInfo;
+use crate::vec3::{self, Vec3f};
 
 pub trait Material: Send + Sync {
     fn hit(&self, hit: SDFHitInfo) -> Vec3f;

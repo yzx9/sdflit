@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{
-    material::{DynMaterial, Material},
-    sdf::{DynSDF, SDF},
-    vec3::Vec3f,
-};
-use pyo3::prelude::*;
 use std::sync::Arc;
+
+use pyo3::prelude::*;
+
+use crate::material::{DynMaterial, Material};
+use crate::sdf::{DynSDF, SDF};
+use crate::vec3::Vec3f;
 
 pub trait Object: Send + Sync {
     fn hit(&self, p: Vec3f) -> Option<Vec3f>;

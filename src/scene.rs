@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{
-    accelerator::{Accelerator, BVH},
-    object::{DynObject, Object},
-    vec3::{self, Vec3f},
-};
-use pyo3::{exceptions::PyValueError, prelude::*};
 use std::sync::Arc;
+
+use pyo3::{exceptions::PyValueError, prelude::*};
+
+use crate::accelerator::{Accelerator, BVH};
+use crate::object::{DynObject, Object};
+use crate::vec3::{self, Vec3f};
 
 pub trait Scene: Send + Sync {
     fn hit(&self, p: Vec3f) -> Vec3f;

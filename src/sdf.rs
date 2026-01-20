@@ -2,9 +2,11 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::vec3::Vec3f;
-use pyo3::prelude::*;
 use std::sync::Arc;
+
+use pyo3::prelude::*;
+
+use crate::vec3::Vec3f;
 
 pub trait SDF: Send + Sync {
     fn distance(&self, p: Vec3f) -> f32;

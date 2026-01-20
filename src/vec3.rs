@@ -2,10 +2,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-use std::{
-    cmp::PartialOrd,
-    ops::{Add, Div, Mul, Sub},
-};
+use std::cmp::PartialOrd;
+use std::ops::{Add, Div, Mul, Sub};
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Vec3<T> {

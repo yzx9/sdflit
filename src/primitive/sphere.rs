@@ -2,12 +2,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{
-    sdf::{DynSDF, SDFHitInfo, SDF},
-    vec3::Vec3f,
-};
-use pyo3::prelude::*;
 use std::sync::Arc;
+
+use pyo3::prelude::*;
+
+use crate::sdf::{DynSDF, SDFHitInfo, SDF};
+use crate::vec3::Vec3f;
 
 #[pyclass]
 #[derive(Clone)]
