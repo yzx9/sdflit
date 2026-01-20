@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2023-2026 Zexin Yuan <aim@yzx9.xyz>
+#
+# SPDX-License-Identifier: Apache-2.0
+
 import numpy as np
 import numpy.testing as npt
 

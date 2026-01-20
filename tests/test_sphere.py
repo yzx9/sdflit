@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2023-2026 Zexin Yuan <aim@yzx9.xyz>
+#
+# SPDX-License-Identifier: Apache-2.0
+
 import numpy as np
 import numpy.testing as npt
 import pytest
@@ -11,8 +15,8 @@ class TestSphere:
         [
             # fmt:off
             ((0, 0, 0), 1, (0, 0, 0), -1),
-            ((0, 0, 0), 1, (1, 0, 0),  0),
-            ((0, 0, 0), 1, (2, 0, 0),  1),
+            ((0, 0, 0), 1, (1, 0, 0), 0),
+            ((0, 0, 0), 1, (2, 0, 0), 1),
             ((1, 1, 1), 1, (0, 0, 0), np.sqrt(3) - 1),
             ((1, 1, 1), 1, (1, 0, 0), np.sqrt(2) - 1),
             # fmt:on
@@ -26,7 +30,7 @@ class TestSphere:
         "center, raidus, p, expected",
         [
             # fmt:off
-            ((0, 0, 0), 1, (0, 0, 0), True ),
+            ((0, 0, 0), 1, (0, 0, 0), True),
             ((0, 0, 0), 1, (1, 0, 0), False),
             ((0, 0, 0), 1, (2, 0, 0), False),
             ((1, 1, 1), 1, (0, 0, 0), False),

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023-2026 Zexin Yuan <aim@yzx9.xyz>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 use std::{
     cmp::PartialOrd,
     ops::{Add, Div, Mul, Sub},

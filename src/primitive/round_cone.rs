@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023-2026 Zexin Yuan <aim@yzx9.xyz>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::{
     sdf::{DynSDF, SDFHitInfo, SDF},
     solid_geometry::proj_p_to_line,

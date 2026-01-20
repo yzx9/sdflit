@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023-2026 Zexin Yuan <aim@yzx9.xyz>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::vec3::{self, Vec3f};
 
 pub fn proj_p_to_line(p: Vec3f, a: Vec3f, b: Vec3f) -> f32 {
